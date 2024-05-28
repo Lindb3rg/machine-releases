@@ -4,7 +4,7 @@
 
 replicaCount: 1
 
-namespace: "machine-1"
+namespace: ""
 
 machineDataGenerator:
   image: "adamlindberg90/machine-data-generator:latest"
@@ -12,7 +12,6 @@ machineDataGenerator:
   port: 90
   targetPort: 90
   type: NodePort
-  portName: "http"
 
 dataServer:
   image: "adamlindberg90/data-server:latest"  
@@ -22,9 +21,8 @@ dataServer:
   type: NodePort
   portName: "http"
 
-
 mlPrediction:
-  image: "adamlindberg90/ml-prediction:latest"  
+  image: "adamlindberg90/ml-prediction:latest"
   port: 5001
   targetPort: 5001
   pullPolicy: Always
