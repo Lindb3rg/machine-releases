@@ -3,22 +3,28 @@
 # Get the current timestamp to ensure a unique folder name
 TIMESTAMP := $(shell date +%Y%m%d%H%M%S)
 
-# Define the source directory
-SRC_DIR := data-server
+# Define the source directory and the base name for the new directory
+SRC_DIR := machine-deployment
+NEW_DIR_BASE := machine-deployment
 
-# Define the new directory base name, can be overridden by a command-line argument
-NEW_DIR_BASE := $(if $(NAME),$(NAME),data-server-copy)
-
-# Define the new directory name using the timestamp
-NEW_DIR := $(NEW_DIR_BASE)-$(TIMESTAMP)
+# Define the new directory name using the namespace
+NEW_DIR := $(NEW_DIR_BASE)-$(NAMESPACE)-$(TIMESTAMP)
 
 # Default target
-all: copy
+all: create-dir
 
-# Target to copy the folder
-copy:
-	@echo "Creating a copy of $(SRC_DIR) as $(NEW_DIR)..."
-	@cp -r $(SRC_DIR) $(NEW_DIR)
+# Target to create a new folder, copy the files, and replace the namespace in values.yaml
+create-dir:
+	@if [ -z "$(NAMESPACE)" ]; then \
+		echo "Error: NAMESPACE is not set."; \
+		exit 1; \
+	fi
+	@echo "Creating a new folder $(NEW_DIR)..."
+	@mkdir -p $(NEW_DIR)
+	@echo "Copying files from $(SRC_DIR) to $(NEW_DIR)..."
+	@cp -r $(SRC_DIR)/* $(NEW_DIR)
+	@echo "Setting namespace to $(NAMESPACE) in $(NEW_DIR)/values.yaml..."
+	@sed -i.bak 's/namespace: .*/namespace: "$(NAMESPACE)"/' $(NEW_DIR)/values.yaml
 	@echo "Copy created: $(NEW_DIR)"
 
-.PHONY: all copy
+.PHONY: all create-dir

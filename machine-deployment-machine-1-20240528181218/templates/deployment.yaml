@@ -1,0 +1,110 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Chart.Name }}-machine-output
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: {{ .Chart.Name }}-machine-output
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Chart.Name }}-machine-output
+  template:
+    metadata:
+      labels:
+        app: {{ .Chart.Name }}-machine-output
+    spec:
+      containers:
+      - name: machine-data-generator
+        image: {{ .Values.machineDataGenerator.image }}
+        env:
+        - name: namespace
+          value: {{ .Values.namespace }}
+        - name: chart_name
+          value: {{ .Chart.Name }}
+        # resources:
+        #   limits:
+        #     cpu: 100m
+        #     memory: 128Mi
+        #   requests:
+        #     cpu: 100m
+        #     memory: 128Mi
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Chart.Name }}-data-server
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: {{ .Chart.Name }}-data-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Chart.Name }}-data-server
+  template:
+    metadata:
+      labels:
+        app: {{ .Chart.Name }}-data-server
+    spec:
+      containers:
+      - name: data-server
+        image: {{ .Values.dataServer.image }}
+        ports:
+        - containerPort: {{ .Values.dataServer.port }}
+        env:
+        - name: namespace
+          value: {{ .Values.namespace }}
+        - name: chart_name
+          value: {{ .Chart.Name }}
+        
+        resources:
+          requests:
+            cpu: 100m  # 0.1 CPU cores
+          limits:
+            cpu: 200m  # 0.2 CPU cores
+
+---
+
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Chart.Name }}-ml-prediction
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: {{ .Chart.Name }}-ml-prediction
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Chart.Name }}-ml-prediction
+  template:
+    metadata:
+      labels:
+        app: {{ .Chart.Name }}-ml-prediction
+    spec:
+      containers:
+      - name: ml-prediction
+        image: {{ .Values.mlPrediction.image }}
+        ports:
+        - containerPort: {{ .Values.mlPrediction.port }}
+        env:
+        - name: namespace
+          value: {{ .Values.namespace }}
+        - name: chart_name
+          value: {{ .Chart.Name }}
+        # resources:
+        #   limits:
+        #     cpu: 100m
+        #     memory: 128Mi
+        #   requests:
+        #     cpu: 100m
+        #     memory: 128Mi
+
+
+
+---

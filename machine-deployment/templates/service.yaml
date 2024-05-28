@@ -1,0 +1,54 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Chart.Name }}-machine-data-generator
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: {{ .Chart.Name }}-machine-data-generator
+spec:
+  type: {{ .Values.machineDataGenerator.type }}
+  ports:
+  - name: "http"
+    port: {{ .machineDataGenerator.port }}
+    targetPort: {{ .machineDataGenerator.targetPort }}
+  selector:
+    app: {{ .Chart.Name }}-machine-data-generator
+
+---
+
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Chart.Name }}-data-server
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: {{ .Chart.Name }}-data-server
+spec:
+  type: {{ .Values.dataServer.type }}
+  ports:
+  - name: {{ .Values.dataServer.portName }}
+    port: {{ .Values.dataServer.port }}
+    targetPort: {{ .Values.dataServer.targetPort }}
+  selector:
+    app: {{ .Chart.Name }}-data-server
+
+
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Chart.Name }}-ml-prediction
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: {{ .Chart.Name }}-ml-prediction
+spec:
+  type: {{ .Values.mlPrediction.type }}
+  ports:
+  - name: {{ .Values.mlPrediction.portName }}
+    port: {{ .Values.mlPrediction.port }}
+    targetPort: {{ .Values.mlPrediction.targetPort }}
+  selector:
+    app: {{ .Chart.Name }}-ml-prediction

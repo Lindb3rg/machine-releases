@@ -1,14 +1,42 @@
-# Default values for data-server.
+# Default values for machine-deployment.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
 replicaCount: 1
 
-image:
-  repository: nginx
-  pullPolicy: IfNotPresent
-  # Overrides the image tag whose default is the chart appVersion.
-  tag: ""
+namespace: ""
+
+machineDataGenerator:
+  image: "adamlindberg90/machine-data-generator:latest"
+  pullPolicy: Always
+  port: 90
+  targetPort: 90
+  type: NodePort
+
+dataServer:
+  image: "adamlindberg90/data-server:latest"  
+  port: 5000
+  targetPort: 5000
+  pullPolicy: Always
+  type: NodePort
+  portName: "http"
+
+mlPrediction:
+  image: "adamlindberg90/ml-prediction:latest"
+  port: 5001
+  targetPort: 5001
+  pullPolicy: Always
+  type: NodePort
+  portName: "http"
+
+service:
+  port: 80
+  type: NodePort
+
+
+
+
+
 
 imagePullSecrets: []
 nameOverride: ""
@@ -39,9 +67,9 @@ securityContext: {}
   # runAsNonRoot: true
   # runAsUser: 1000
 
-service:
-  type: ClusterIP
-  port: 80
+# service:
+#   type: ClusterIP
+#   port: 80
 
 ingress:
   enabled: false
