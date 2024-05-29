@@ -4,7 +4,7 @@
 
 replicaCount: 1
 
-namespace: "machine-1"
+namespace: "machine-5"
 
 machineDataGenerator:
   image: "adamlindberg90/machine-data-generator:latest"
