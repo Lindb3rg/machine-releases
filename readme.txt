@@ -1,6 +1,7 @@
-1. Create new folder from machine
+1. Create new folder for machine
 
     make NAMESPACE=<machineID>
+    This creates a copy of machine-deployment and modifies the namespace.
 
 2. Create namespace in Kubernetes
 
